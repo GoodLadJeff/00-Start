@@ -1,17 +1,10 @@
-//
-//  Scene.h
-//
 #pragma once
 #include <vector>
 
 #include "../Body.h"
 
-/*
-====================================================
-Scene
-====================================================
-*/
-class Scene {
+class Scene 
+{
 public:
 	Scene() { bodies.reserve( 128 ); }
 	~Scene();
@@ -21,5 +14,6 @@ public:
 	void Update( const float dt_sec );	
 
 	std::vector<Body> bodies;
+	Body earth;
 };
 

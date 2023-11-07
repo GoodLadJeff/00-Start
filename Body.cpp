@@ -31,6 +31,8 @@ Mat3 Body::GetInverseInertiaTensorWorldSpace() const
 	return inverseInertiaTensor;
 }
 
+
+
 void Body::Update(const float dt_sec)
 {
 	position += linearVelocity * dt_sec;
@@ -45,6 +47,7 @@ void Body::Update(const float dt_sec)
 	orientation = dq * orientation;
 	orientation.Normalize();
 	position = positionCM + dq.RotatePoint(CMToPositon);
+	/*angularVelocity -= angularVelocity * (dt_sec /5) ;*/
 }
 
 Vec3 Body::WorldSpaceToBodySpace(const Vec3& worldPoint)

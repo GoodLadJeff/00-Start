@@ -57,17 +57,18 @@ void Scene::Initialize() {
 	float gap = 6;
 	float n_balls = 400;
 
+	Body body2;
 	for (int i = 0; i < n_balls; i++) 
 	{
-		body.position = Vec3(cos(incrementalAngle) * radiusArena * gap, sin(incrementalAngle) * radiusArena * gap, 0);
-		body.orientation = Quat(0, 0, 0, 1);
-		body.shape = new ShapeSphere(radiusArena);
-		body.inverseMass = 0.00f;
-		body.elasticity = 0.5f;
-		body.friction = 0.05f;
-		body.linearVelocity = Vec3(0,0,0);
+		body2.position = Vec3(cos(incrementalAngle) * radiusArena * gap, sin(incrementalAngle) * radiusArena * gap, 0);
+		body2.orientation = Quat(0, 0, 0, 1);
+		body2.shape = new ShapeSphere(radiusArena);
+		body2.inverseMass = 0.00f;
+		body2.elasticity = 0.5f;
+		body2.friction = 0.05f;
+		body2.linearVelocity = Vec3(0,0,0);
 		incrementalAngle += 2 * 3.14159265 / n_balls;
-		bodies.push_back(body);
+		bodies.push_back(body2);
 	}
 }
 
@@ -90,7 +91,8 @@ void Scene::Update(const float dt_sec)
 	// Collision checks (Narrow phase)
 	int numContacts = 0;
 	const int maxContacts = bodies.size() * bodies.size();
-	Contact* contacts = (Contact*)alloca(sizeof(Contact) * maxContacts);
+	Contact* contacts = (Contact*)_malloca(sizeof(Contact) * maxContacts);
+
 	for (int i = 0; i < collisionPairs.size(); ++i)
 	{
 		const CollisionPair& pair = collisionPairs[i];

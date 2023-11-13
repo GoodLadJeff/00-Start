@@ -69,6 +69,7 @@
     <ClInclude Include="Contact.h" />
     <ClInclude Include="Intersections.h" />
     <ClInclude Include="Shape.h" />
+    <ClInclude Include="Utils.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>15.0</VCProjectVersion>

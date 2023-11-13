@@ -12,8 +12,13 @@ public:
 	void Reset();
 	void Initialize();
 	void Update( const float dt_sec );	
+	void OnKeyPress(const char* key);
 
 	std::vector<Body> bodies;
 	Body earth;
+
+	bool isCochonnetPlayed = false;
+	Body cochonnet;
+	std::vector<Body> petanque_balls;
 };
 

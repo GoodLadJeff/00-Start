@@ -3,6 +3,7 @@
 #include "../Shape.h"
 #include "../Intersections.h"
 #include "../Broadphase.h"
+#include "../Utils.h"
 
 Scene::~Scene() {
 	for ( int i = 0; i < bodies.size(); i++ ) {
@@ -20,7 +21,52 @@ void Scene::Reset() {
 	Initialize();
 }
 
-void Scene::Initialize() {
+void Scene::Initialize() 
+{
+	float incrementalAngle = 0;
+	float radiusArena = 5;
+	float gap = 6;
+	float n_balls = 20;
+
+	Body ball_arena;
+	for (int i = 0; i < n_balls; i++)
+	{
+		ball_arena.position = Vec3(cos(incrementalAngle) * radiusArena * gap, sin(incrementalAngle) * radiusArena * gap, 0);
+		ball_arena.orientation = Quat(0, 0, 0, 1);
+		ball_arena.shape = new ShapeSphere(radiusArena);
+		ball_arena.inverseMass = 0.00f;
+		ball_arena.elasticity = 0.5f;
+		ball_arena.friction = 0.05f;
+		ball_arena.linearVelocity = Vec3(0, 0, 0);
+		incrementalAngle += 2 * 3.14159265 / n_balls;
+		bodies.push_back(ball_arena);
+	}
+
+	Body ball_ground;
+	for (size_t i = 0; i < 60; i++)
+	{
+		std::pair<double, double> randomCoord = Utils::getRandomCoordinate(radiusArena * gap);
+		ball_ground.position = Vec3(randomCoord.first, randomCoord.second, -4);
+		ball_ground.orientation = Quat(0, 0, 0, 1);
+		ball_ground.shape = new ShapeSphere(radiusArena);
+		ball_ground.inverseMass = 0.00f;
+		ball_ground.elasticity = 0.5f;
+		ball_ground.friction = 0.05f;
+		ball_ground.linearVelocity = Vec3(0, 0, 0);
+		bodies.push_back(ball_ground);
+	}
+
+	float radius = 10000.0f;
+
+	Body earth;
+	earth.position = Vec3(0, 0, -radius);
+	earth.orientation = Quat(0, 0, 0, 1);
+	earth.shape = new ShapeSphere(radius);
+	earth.inverseMass = 0.0f;
+	earth.elasticity = 0.5f;
+	earth.friction = 0.5f;
+	bodies.push_back(earth);
+
 	Body body;
 	for (int i = 0; i < 6; ++i)
 	{
@@ -40,36 +86,14 @@ void Scene::Initialize() {
 			bodies.push_back(body);
 		}
 	}
-	
-	float radius = 10000.0f;
 
-	Body earth;
-	earth.position = Vec3(0, 0, -radius);
-	earth.orientation = Quat(0, 0, 0, 1);
-	earth.shape = new ShapeSphere(radius);
-	earth.inverseMass = 0.0f;
-	earth.elasticity = 0.5f;
-	earth.friction = 0.5f;
-	bodies.push_back(earth);
-
-	float incrementalAngle = 0;
-	float radiusArena = 5;
-	float gap = 6;
-	float n_balls = 400;
-
-	Body body2;
-	for (int i = 0; i < n_balls; i++) 
-	{
-		body2.position = Vec3(cos(incrementalAngle) * radiusArena * gap, sin(incrementalAngle) * radiusArena * gap, 0);
-		body2.orientation = Quat(0, 0, 0, 1);
-		body2.shape = new ShapeSphere(radiusArena);
-		body2.inverseMass = 0.00f;
-		body2.elasticity = 0.5f;
-		body2.friction = 0.05f;
-		body2.linearVelocity = Vec3(0,0,0);
-		incrementalAngle += 2 * 3.14159265 / n_balls;
-		bodies.push_back(body2);
-	}
+	cochonnet.position = Vec3(0, 0, 10);
+	cochonnet.orientation = Quat(0, 0, 0, 1);
+	cochonnet.shape = new ShapeSphere(2);
+	cochonnet.inverseMass = 0.1f;
+	cochonnet.elasticity = 0.5f;
+	cochonnet.friction = 0.5f;
+	bodies.push_back(cochonnet);
 }
 
 void Scene::Update(const float dt_sec)
@@ -138,5 +162,19 @@ void Scene::Update(const float dt_sec)
 		for (int i = 0; i < bodies.size(); ++i) {
 			bodies[i].Update(timeRemaining);
 		}
+	}
+}
+
+void Scene::OnKeyPress(const char* key)
+{
+	if (key == "F")
+	{
+		std::cout << "f key pressed" << std::endl;
+		float radius = 0.5f;
+		float x = 0;
+		float y = 0;
+		float z = 10;
+
+		cochonnet.inverseMass = 0.5f;
 	}
 }

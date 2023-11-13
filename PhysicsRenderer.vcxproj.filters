@@ -161,5 +161,8 @@
     <ClInclude Include="Broadphase.h">
       <Filter>code\Physics</Filter>
     </ClInclude>
+    <ClInclude Include="Utils.h">
+      <Filter>code\Math</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

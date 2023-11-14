@@ -21,6 +21,7 @@ Application * application = NULL;
 
 #include <time.h>
 #include <windows.h>
+#include <iostream>
 
 static bool gIsInitialized( false );
 static unsigned __int64 gTicksPerSecond;
@@ -557,6 +558,10 @@ void Application::UpdateUniforms() {
 			camPos += m_cameraFocusPoint;
 
 			camLookAt = m_cameraFocusPoint;
+			scene->camRot = m_cameraFocusPoint;
+			std::cout << camLookAt.x << std::endl;
+			std::cout << camLookAt.y << std::endl;
+			std::cout << camLookAt.z << std::endl;
 
 			int windowWidth;
 			int windowHeight;
@@ -579,6 +584,9 @@ void Application::UpdateUniforms() {
 
 			// update offset into the buffer
 			uboByteOffset += deviceContext.GetAligendUniformByteOffset( sizeof( camera ) );
+
+			scene->camPos = camPos;
+			
 		}
 
 		//

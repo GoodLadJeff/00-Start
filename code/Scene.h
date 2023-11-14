@@ -17,8 +17,10 @@ public:
 	std::vector<Body> bodies;
 	Body earth;
 
+	Vec3 camPos;
+	Vec3 camRot;
 	bool isCochonnetPlayed = false;
-	Body cochonnet;
-	std::vector<Body> petanque_balls;
+	int cochonnetIndex;
+	std::vector<int> petanque_balls;
 };
 

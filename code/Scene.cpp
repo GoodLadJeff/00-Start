@@ -67,33 +67,17 @@ void Scene::Initialize()
 	earth.friction = 0.5f;
 	bodies.push_back(earth);
 
-	Body body;
-	for (int i = 0; i < 6; ++i)
-	{
-		for (int j = 0; j < 6; ++j)
-		{
-			float radius = 0.5f;
-			float x = (i - 1) * radius * 1.f;
-			float y = (j - 1) * radius * 1.5f;
-
-			body.position = Vec3(x, y, (i+1)*3);
-			body.orientation = Quat(0, 0, 0, 1);
-			body.shape = new ShapeSphere(radius);
-			body.inverseMass = 0.09f;
-			body.elasticity = 0.5f;
-			body.friction = 0.05f;
-			body.linearVelocity = Vec3(0, 0, -10);
-			bodies.push_back(body);
-		}
-	}
-
-	cochonnet.position = Vec3(0, 0, 10);
+	Body cochonnet;
+	cochonnet.position = Vec3(0, 0, 100);
 	cochonnet.orientation = Quat(0, 0, 0, 1);
-	cochonnet.shape = new ShapeSphere(2);
-	cochonnet.inverseMass = 0.1f;
-	cochonnet.elasticity = 0.5f;
+	cochonnet.shape = new ShapeSphere(.7f);
+	cochonnet.inverseMass = 0.0f;
+	cochonnet.elasticity = 0.1f;
 	cochonnet.friction = 0.5f;
 	bodies.push_back(cochonnet);
+	cochonnetIndex = bodies.size() - 1;
+
+	std::cout << "press f to launch the cochonnet" << std::endl;
 }
 
 void Scene::Update(const float dt_sec)
@@ -175,6 +159,11 @@ void Scene::OnKeyPress(const char* key)
 		float y = 0;
 		float z = 10;
 
-		cochonnet.inverseMass = 0.5f;
+		camRot = Vec3(camPos.x * -1, camPos.y * -1, camPos.z * -1);
+
+		bodies[cochonnetIndex].position = (camPos);
+		bodies[cochonnetIndex].inverseMass = 0.9f;
+		bodies[cochonnetIndex].angularVelocity.Zero();
+		bodies[cochonnetIndex].linearVelocity = camRot * 10;
 	}
 }

@@ -27,6 +27,10 @@ void Scene::Initialize()
 	float radiusArena = 5;
 	float gap = 6;
 	float n_balls = 20;
+	currentPetanqueBallIndex = 0;
+	cochonnetIndex = 0;
+	isCochonnetPlayed = false;
+	
 
 	Body ball_arena;
 	for (int i = 0; i < n_balls; i++)
@@ -35,8 +39,8 @@ void Scene::Initialize()
 		ball_arena.orientation = Quat(0, 0, 0, 1);
 		ball_arena.shape = new ShapeSphere(radiusArena);
 		ball_arena.inverseMass = 0.00f;
-		ball_arena.elasticity = 0.5f;
-		ball_arena.friction = 0.05f;
+		ball_arena.elasticity = 0.01f;
+		ball_arena.friction = 1.0f;
 		ball_arena.linearVelocity = Vec3(0, 0, 0);
 		incrementalAngle += 2 * 3.14159265 / n_balls;
 		bodies.push_back(ball_arena);
@@ -50,8 +54,8 @@ void Scene::Initialize()
 		ball_ground.orientation = Quat(0, 0, 0, 1);
 		ball_ground.shape = new ShapeSphere(radiusArena);
 		ball_ground.inverseMass = 0.00f;
-		ball_ground.elasticity = 0.5f;
-		ball_ground.friction = 0.05f;
+		ball_ground.elasticity = 0.01f;
+		ball_ground.friction = 1.0f;
 		ball_ground.linearVelocity = Vec3(0, 0, 0);
 		bodies.push_back(ball_ground);
 	}
@@ -63,19 +67,33 @@ void Scene::Initialize()
 	earth.orientation = Quat(0, 0, 0, 1);
 	earth.shape = new ShapeSphere(radius);
 	earth.inverseMass = 0.0f;
-	earth.elasticity = 0.5f;
+	earth.elasticity = 0.01f;
 	earth.friction = 0.5f;
 	bodies.push_back(earth);
 
 	Body cochonnet;
 	cochonnet.position = Vec3(0, 0, 100);
 	cochonnet.orientation = Quat(0, 0, 0, 1);
-	cochonnet.shape = new ShapeSphere(.7f);
+	cochonnet.shape = new ShapeSphere(.2f);
 	cochonnet.inverseMass = 0.0f;
 	cochonnet.elasticity = 0.1f;
 	cochonnet.friction = 0.5f;
 	bodies.push_back(cochonnet);
 	cochonnetIndex = bodies.size() - 1;
+
+	unsigned int number_petanque_balls = 10;
+
+	for (size_t i = 0; i < number_petanque_balls; i++)
+	{
+		Body petanque_ball;
+		petanque_ball.position = Vec3(0, 0, 100);
+		petanque_ball.orientation = Quat(0, 0, 0, 1);
+		petanque_ball.shape = new ShapeSphere(.6f);
+		petanque_ball.inverseMass = 0.0f;
+		petanque_ball.elasticity = 0.05f;
+		petanque_ball.friction = 0.7f;
+		bodies.push_back(petanque_ball);
+	}
 
 	std::cout << "press f to launch the cochonnet" << std::endl;
 }
@@ -90,7 +108,7 @@ void Scene::Update(const float dt_sec)
 		// Gravity needs to be an impulse I
 		// I == dp, so F == dp/dt <=> dp = F * dt
 		// <=> I = F * dt <=> I = m * g * dt
-		Vec3 impulseGravity = Vec3(0, 0, -10) * mass * dt_sec;
+		Vec3 impulseGravity = Vec3(0, 0, -50) * mass * dt_sec;
 		body.ApplyImpulseLinear(impulseGravity);
 	}
 	// Broadphase
@@ -151,19 +169,28 @@ void Scene::Update(const float dt_sec)
 
 void Scene::OnKeyPress(const char* key)
 {
-	if (key == "F")
-	{
-		std::cout << "f key pressed" << std::endl;
-		float radius = 0.5f;
-		float x = 0;
-		float y = 0;
-		float z = 10;
+	if (key != "F") return;
+	if (currentPetanqueBallIndex >= bodies.size()) return;
 
-		camRot = Vec3(camPos.x * -1, camPos.y * -1, camPos.z * -1);
+	camRot = Vec3(camPos.x * -1, camPos.y * -1, camPos.z * -1);
+
+	if (isCochonnetPlayed == false)
+	{
+		isCochonnetPlayed = true;
+		std::cout << "f key pressed" << std::endl;
 
 		bodies[cochonnetIndex].position = (camPos);
 		bodies[cochonnetIndex].inverseMass = 0.9f;
 		bodies[cochonnetIndex].angularVelocity.Zero();
-		bodies[cochonnetIndex].linearVelocity = camRot * 10;
+		bodies[cochonnetIndex].linearVelocity = camRot;
+		currentPetanqueBallIndex = cochonnetIndex + 1;
+	}
+	else
+	{
+		bodies[currentPetanqueBallIndex].position = (camPos);
+		bodies[currentPetanqueBallIndex].inverseMass = 0.95f;
+		bodies[currentPetanqueBallIndex].angularVelocity.Zero();
+		bodies[currentPetanqueBallIndex].linearVelocity = camRot;
+		currentPetanqueBallIndex += 1;
 	}
 }

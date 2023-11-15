@@ -559,9 +559,6 @@ void Application::UpdateUniforms() {
 
 			camLookAt = m_cameraFocusPoint;
 			scene->camRot = m_cameraFocusPoint;
-			std::cout << camLookAt.x << std::endl;
-			std::cout << camLookAt.y << std::endl;
-			std::cout << camLookAt.z << std::endl;
 
 			int windowWidth;
 			int windowHeight;

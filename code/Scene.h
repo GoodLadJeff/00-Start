@@ -21,6 +21,6 @@ public:
 	Vec3 camRot;
 	bool isCochonnetPlayed = false;
 	int cochonnetIndex;
-	std::vector<int> petanque_balls;
+	int currentPetanqueBallIndex = 0;
 };
 
